@@ -67,7 +67,6 @@ class LocationController extends Controller
      */
     public function update(Request $request, Location $location)
     {
-        if
         $location->fill($request->all());
         return $location->save();
     }
