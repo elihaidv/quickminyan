@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Location;
 use App\Pray;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,9 @@ class PrayController extends Controller
      */
     public function store(Request $request)
     {
-        return Pray::create($request->all());
+        $pray = Pray::create($request->all());
+        $pray->location->increment('prayers');
+        return $pray;
     }
 
     /**

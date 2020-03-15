@@ -16,13 +16,15 @@ class CreateLocations extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
-            $table->point('location')->nullable();
+            $table->point('location');
             $table->string('city')->nullable();
             $table->integer('prayers')->default(0);
             $table->boolean('repeatly')->deafult(0);
             $table->time('hour')->nullable();
             $table->integer('user_id')->references('id')->on('users')->nullable();
             $table->timestamps();
+
+            $table->spatialIndex('location');
         });
     }
 

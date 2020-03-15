@@ -8,6 +8,10 @@ use App\User;
 
 class LocationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api')->only(['update', 'destroy']);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -32,13 +36,14 @@ class LocationController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'phone' => $request->phone,
+                'api_token' => str_random(60)
             ]);
             $location->user_id = $user->id;
         }
         $location->user_id = $request->user;
         $location->fill($request->all());
         $location->save();
-        return $location;
+        return $location->load('user');
     }
 
     /**
@@ -62,6 +67,7 @@ class LocationController extends Controller
      */
     public function update(Request $request, Location $location)
     {
+        if
         $location->fill($request->all());
         return $location->save();
     }
