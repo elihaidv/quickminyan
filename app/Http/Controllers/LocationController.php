@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Location;
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
+
 
 class LocationController extends Controller
 {
@@ -19,7 +23,17 @@ class LocationController extends Controller
      */
     public function index(Request $request)
     {
-        return Location::all();
+        return Location::query()->selectRaw("*,(
+            GLength(
+              LineStringFromWKB(
+                LineString(
+                  location,
+                  GeomFromText('POINT(".$request->lat ." ". $request->lng.")')
+                )
+              )
+            )
+          )
+          AS distance")->get();
     }
 
     /**
@@ -33,15 +47,16 @@ class LocationController extends Controller
         $location = new Location();
 
         if (!$request->user){
-            $user = User::create([
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'api_token' => str_random(60)
-            ]);
-            $location->user_id = $user->id;
+            // $user = User::create([
+            //     'name' => $request->name,
+            //     'phone' => $request->phone,
+            //     'api_token' => Str::random(60)
+            // ]);
+            // $location->user_id = $user->id;
         }
-        $location->user_id = $request->user;
         $location->fill($request->all());
+        $location->user_id = $request->user;
+        $location->location = new Point($request->lat, $request->lng);
         $location->save();
         return $location->load('user');
     }
@@ -67,7 +82,7 @@ class LocationController extends Controller
      */
     public function update(Request $request, Location $location)
     {
-        if
+
         $location->fill($request->all());
         return $location->save();
     }

@@ -49,7 +49,6 @@ dialog: false
     },
     computed: {
         locations () {
-            console.log(this.$store.getters);
             return this.$store.getters.locations;
         }
     }
