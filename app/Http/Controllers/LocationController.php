@@ -82,7 +82,10 @@ class LocationController extends Controller
      */
     public function update(Request $request, Location $location)
     {
+<<<<<<< HEAD
 
+=======
+>>>>>>> f830f3b3f40a5d2f38b86c897071ac2b05db5130
         $location->fill($request->all());
         return $location->save();
     }
